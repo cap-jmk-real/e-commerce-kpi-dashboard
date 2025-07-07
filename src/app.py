@@ -17,9 +17,29 @@ def load_data():
 df = load_data()
 
 # Sidebar filter
+# Sidebar filter
 st.sidebar.header("📌 Filters")
+
+# Region filter
 selected_region = st.sidebar.selectbox("Select Region", df["Region"].unique())
-df_filtered = df[df["Region"] == selected_region]
+
+# Date range filter
+min_date = df["Order Date"].min()
+max_date = df["Order Date"].max()
+start_date, end_date = st.sidebar.date_input(
+    "Select Date Range",
+    value=[min_date, max_date],
+    min_value=min_date,
+    max_value=max_date
+)
+
+# Filter dataframe
+df_filtered = df[
+    (df["Region"] == selected_region) &
+    (df["Order Date"] >= pd.to_datetime(start_date)) &
+    (df["Order Date"] <= pd.to_datetime(end_date))
+]
+
 
 # Title
 st.title("📦 E-Commerce KPI Dashboard")
